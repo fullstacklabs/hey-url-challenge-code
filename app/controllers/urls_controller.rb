@@ -16,32 +16,16 @@ class UrlsController < ApplicationController
   end
 
   def show
-    @url = Url.new(short_url: '123', original_url: 'http://google.com', created_at: Time.now)
-    # implement queries
-    @daily_clicks = [
-      ['1', 13],
-      ['2', 2],
-      ['3', 1],
-      ['4', 7],
-      ['5', 20],
-      ['6', 18],
-      ['7', 10],
-      ['8', 20],
-      ['9', 15],
-      ['10', 5]
-    ]
-    @browsers_clicks = [
-      ['IE', 13],
-      ['Firefox', 22],
-      ['Chrome', 17],
-      ['Safari', 7]
-    ]
-    @platform_clicks = [
-      ['Windows', 13],
-      ['macOS', 22],
-      ['Ubuntu', 17],
-      ['Other', 7]
-    ]
+    result = FetchUrlStats.call(short_url: params[:url])
+    if result.failure?
+      flash[:notice] = result.error
+      redirect_to urls_path and return
+    end
+
+    @url = result.url
+    @daily_clicks = result.daily_clicks
+    @browsers_clicks = result.browsers_clicks
+    @platform_clicks = result.platform_clicks
   end
 
   def visit

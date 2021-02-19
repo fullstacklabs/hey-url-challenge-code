@@ -21,4 +21,10 @@
 #
 class Click < ApplicationRecord
   belongs_to :url
+
+  scope :after, -> (datetime) { where('created_at >= ?', datetime) }
+  scope :on_current_month, -> () { after(Time.now.beginning_of_month) }
+  scope :daily_clicks, -> () { group('date(clicks.created_at)').count }
+  scope :browsers_clicks, -> () { group(:browser).count }
+  scope :platform_clicks, -> () { group(:platform).count }
 end
