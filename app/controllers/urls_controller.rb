@@ -38,7 +38,7 @@ class UrlsController < ApplicationController
       platform: browser.platform&.name || 'unknown'
     )
     if result.failure?
-      flash[:notice] = result.error
+      flash[:error] = result.error
       redirect_to urls_path and return
     end
 

@@ -168,16 +168,73 @@ RSpec.describe UrlsController, type: :controller do
   end
 
   describe 'GET #visit' do
-    it 'tracks click event and stores platform and browser information' do
-      skip 'add test'
+    # let(:browser) { Browser.new("Some User Agent", accept_language: "en-us") }
+    let(:params) { { url: 'http://example.com' } }
+    let(:platform_name) { double(:platform_name) }
+    let(:browser_name) { double(:browser_name) }
+
+    subject { get :visit, params: params }
+
+    before do
+      allow(controller).to receive(:browser).and_return(double(:browser, name: browser_name, platform: double(:browser_platform, name: platform_name)))
     end
 
-    it 'redirects to the original url' do
-      skip 'add test'
+    it 'expect pass the short url, the browser name and platform name to the interactor' do
+      expect(VisitUrl).to receive(:call).
+        with(short_url: 'http://example.com', browser: browser_name, platform: platform_name).
+        and_return(double(:result,
+          failure?: false,
+          url: nil
+        ))
+      subject
     end
 
-    it 'throws 404 when the URL is not found' do
-      skip 'add test'
+    context 'when success visiting the URL' do
+      let(:url) { double(:url, original_url: 'http://example.com') }
+
+      before do
+        allow(VisitUrl).to receive(:call).and_return(double(:result,
+          failure?: false,
+          url: url
+        ))
+        subject
+      end
+
+      it_behaves_like :do_not_set_flash
+
+      it 'redirect to the original_url' do 
+        expect(response).to redirect_to 'http://example.com'
+      end
+    end
+
+    context 'when the URL is not found' do
+      let(:url) { double(:url, original_url: 'http://example.com') }
+
+      before do
+        allow(VisitUrl).to receive(:call).and_return(double(:result,
+          failure?: false,
+          url: nil
+        ))
+        subject
+      end
+
+      it_behaves_like :do_not_set_flash
+
+      it_behaves_like :render_404
+    end
+    
+    context 'when fails visiting the URL' do
+      before do
+        allow(VisitUrl).to receive(:call).and_return(double(:result,
+          failure?: true,
+          error: 'Something wrong happens.'
+        ))
+        subject
+      end
+
+      it { expect(response).to redirect_to urls_path }
+
+      it_behaves_like :set_flash, type: :error, message: 'Something wrong happens.'
     end
   end
 end
