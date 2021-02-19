@@ -72,3 +72,5 @@ gem "interactor", "~> 3.1"
 gem "interactor-rails", "~> 2.2"
 
 gem "validate_url", "~> 1.0"
+
+gem "rails-controller-testing", "~> 1.0"
