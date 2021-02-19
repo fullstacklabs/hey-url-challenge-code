@@ -21,6 +21,7 @@ class UrlsController < ApplicationController
       flash[:notice] = result.error
       redirect_to urls_path and return
     end
+    render_not_found and return if result.url.nil?
 
     @url = result.url
     @daily_clicks = result.daily_clicks
@@ -38,6 +39,8 @@ class UrlsController < ApplicationController
       flash[:notice] = result.error
       redirect_to urls_path and return
     end
+
+    render_not_found and return if result.url.nil?
     redirect_to result.url.original_url
   end
 
