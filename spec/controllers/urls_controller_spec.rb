@@ -30,8 +30,73 @@ RSpec.describe UrlsController, type: :controller do
   end
 
   describe 'POST #create' do
-    it 'creates a new url' do
-      skip 'add test'
+    let(:params) { {url: { original_url: 'http://example.com' } } }
+    subject { post :create, params: params }
+
+    it 'calls the CreateUrl interactor with the :original_url' do
+      allow(CreateUrl).to receive(:call).and_return(double(:result, failure?: false))
+      expect(CreateUrl).to receive(:call).with({ "original_url" => 'http://example.com' })
+      subject
+    end
+
+    context 'when success creating the new URL' do
+      before do
+        allow(CreateUrl).to receive(:call).and_return(double(:result, failure?: false))
+        subject
+      end
+
+      it { expect(response).to redirect_to urls_path }
+
+      # it 'call the CreateUrl interactor with the original_url context' do
+      #   expect(CreateUrl).to receive(:call).with({ "original_url" => 'http://example.com' })
+      #   subject
+      # end
+
+      it 'set a flash success message' do
+        expect(flash[:success]).to eq('URL shorten created successfully.')
+      end
+
+      it 'does not set a flash error message' do
+        expect(flash[:error]).to be_nil 
+      end
+    end
+
+    context 'when fails creating the new URL' do
+      context 'when there are validation errors' do
+        let(:context_url) { double(:context_url, errors: double(:errors, full_messages: 'Original url is wrong.')) }
+        before do
+          allow(CreateUrl).to receive(:call).and_return(double(:result, failure?: true, url: context_url))
+          subject
+        end
+
+        it { expect(response).to redirect_to urls_path }
+
+        it 'does not set a flash success message' do
+          expect(flash[:success]).to be_nil
+        end
+  
+        it 'set a flash error message' do
+          expect(flash[:error]).to eq('Original url is wrong.') 
+        end
+      end
+
+      context 'when there aren\'t validation errors' do
+        let(:context_error) { 'Something was wrong.' }
+        before do
+          allow(CreateUrl).to receive(:call).and_return(double(:result, failure?: true, url: nil, error: context_error))
+          subject
+        end
+
+        it { expect(response).to redirect_to urls_path }
+
+        it 'does not set a flash success message' do
+          expect(flash[:success]).to be_nil
+        end
+  
+        it 'set a flash error message' do
+          expect(flash[:error]).to eq('Something was wrong.') 
+        end
+      end
     end
   end
 

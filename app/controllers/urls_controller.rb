@@ -10,7 +10,9 @@ class UrlsController < ApplicationController
   def create
     result = CreateUrl.call(url_params)
     if result.failure?
-      flash[:notice] = result.url.present? ? result.url.errors.full_messages : result.error
+      flash[:error] = result.url.present? ? result.url.errors.full_messages : result.error
+    else
+      flash[:success] = 'URL shorten created successfully.'
     end
     redirect_to urls_path
   end
