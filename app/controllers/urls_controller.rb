@@ -20,7 +20,7 @@ class UrlsController < ApplicationController
   def show
     result = FetchUrlStats.call(short_url: params[:url])
     if result.failure?
-      flash[:notice] = result.error
+      flash[:error] = result.error
       redirect_to urls_path and return
     end
     render_not_found and return if result.url.nil?

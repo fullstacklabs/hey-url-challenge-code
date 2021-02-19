@@ -2,6 +2,6 @@
 
 class ApplicationController < ActionController::Base
   def render_not_found
-    render '_shared/404'
+    render '_shared/404', status: 404
   end
 end

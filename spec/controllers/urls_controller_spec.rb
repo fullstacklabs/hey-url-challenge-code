@@ -24,9 +24,9 @@ RSpec.describe UrlsController, type: :controller do
       expect(assigns(:urls)).to eq(urls)
     end
 
-    it 'shows the latest 10 URLs' do
-      skip 'add test'
-    end
+    # it 'shows the latest 10 URLs' do
+    #   skip 'add test'
+    # end
   end
 
   describe 'POST #create' do
@@ -46,11 +46,6 @@ RSpec.describe UrlsController, type: :controller do
       end
 
       it { expect(response).to redirect_to urls_path }
-
-      # it 'call the CreateUrl interactor with the original_url context' do
-      #   expect(CreateUrl).to receive(:call).with({ "original_url" => 'http://example.com' })
-      #   subject
-      # end
 
       it 'set a flash success message' do
         expect(flash[:success]).to eq('URL shorten created successfully.')
@@ -101,13 +96,75 @@ RSpec.describe UrlsController, type: :controller do
   end
 
   describe 'GET #show' do
-    it 'shows stats about the given URL' do
-      skip 'add test'
+    let(:params) { { url: 'http://example.com' } }
+    subject { get :show, params: params }
+
+    context 'when success fetching the URL stats' do
+      let(:url) { double(:url) }
+      let(:daily_clicks) { double(:daily_clicks) }
+      let(:browsers_clicks) { double(:browsers_clicks) }
+      let(:platform_clicks) { double(:platform_clicks) }
+
+      before do
+        allow(FetchUrlStats).to receive(:call).and_return(double(:result,
+          failure?: false,
+          url: url,
+          daily_clicks: daily_clicks,
+          browsers_clicks: browsers_clicks,
+          platform_clicks: platform_clicks,
+        ))
+        subject
+      end
+
+      it_behaves_like :do_not_set_flash
+
+      it { expect(response).to render_template :show }
+
+      it { expect(response).to have_http_status(:ok) }
+
+      it 'assigns the stats returned by the interactor' do
+        expect(assigns(:url)).to eq(url)
+        expect(assigns(:daily_clicks)).to eq(daily_clicks)
+        expect(assigns(:browsers_clicks)).to eq(browsers_clicks)
+        expect(assigns(:platform_clicks)).to eq(platform_clicks)
+      end
     end
 
-    it 'throws 404 when the URL is not found' do
-      skip 'add test'
+    context 'when the URL is not found' do
+      before do
+        allow(FetchUrlStats).to receive(:call).and_return(double(:result,
+          failure?: false,
+          url: nil
+        ))
+        subject
+      end
+
+      it_behaves_like :render_404
+
+      it_behaves_like :do_not_set_flash
     end
+
+    context 'when fails fetching the URL stats' do
+      before do
+        allow(FetchUrlStats).to receive(:call).and_return(double(:result,
+          failure?: true,
+          error: 'Something wrong happens.'
+        ))
+        subject
+      end
+
+      it { expect(response).to redirect_to urls_path }
+
+      it_behaves_like :set_flash, type: :error, message: 'Something wrong happens.'
+    end
+
+    # it 'shows stats about the given URL' do
+    #   skip 'add test'
+    # end
+
+    # it 'throws 404 when the URL is not found' do
+    #   skip 'add test'
+    # end
   end
 
   describe 'GET #visit' do

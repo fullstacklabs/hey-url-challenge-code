@@ -1,5 +1,5 @@
-<% if flash[:notice] %>
-  <% [flash[:notice]].flatten.each do |msg| %>
+<% if flash[:error] %>
+  <% [flash[:error]].flatten.each do |msg| %>
     <div class="card-panel notice deep-orange"><%= msg %></div>
   <% end %>
 <% end %>
