@@ -11,7 +11,11 @@ class UrlsController < ApplicationController
   end
 
   def create
-    # create a new URL record
+    result = CreateUrl.call(url_params)
+    if result.failure?
+      flash[:notice] = result.error
+    end
+    redirect_to urls_path
   end
 
   def show
@@ -46,5 +50,9 @@ class UrlsController < ApplicationController
   def visit
     # params[:url]
     # @url = find url
+  end
+
+  def url_params
+    params.require(:url).permit(:original_url)
   end
 end
