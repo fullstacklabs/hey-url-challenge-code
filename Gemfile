@@ -70,3 +70,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem "interactor", "~> 3.1"
 
 gem "interactor-rails", "~> 2.2"
+
+gem "validate_url", "~> 1.0"

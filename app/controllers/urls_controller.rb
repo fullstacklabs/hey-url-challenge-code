@@ -3,17 +3,14 @@
 class UrlsController < ApplicationController
   def index
     @url = Url.new
-    @urls = [
-      Url.new(short_url: '123', original_url: 'http://google.com', created_at: Time.now),
-      Url.new(short_url: '456', original_url: 'http://facebook.com', created_at: Time.now),
-      Url.new(short_url: '789', original_url: 'http://yahoo.com', created_at: Time.now)
-    ]
+    result = FetchUrls.call
+    @urls = result.urls
   end
 
   def create
     result = CreateUrl.call(url_params)
     if result.failure?
-      flash[:notice] = result.error
+      flash[:notice] = result.url.present? ? result.url.errors.full_messages : result.error
     end
     redirect_to urls_path
   end

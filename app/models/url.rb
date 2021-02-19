@@ -13,4 +13,7 @@
 #
 class Url < ApplicationRecord
   # scope :latest, -> {}
+
+  validates :original_url, presence: true
+  validates :original_url, url: true
 end
