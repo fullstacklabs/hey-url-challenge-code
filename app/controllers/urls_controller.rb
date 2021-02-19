@@ -45,8 +45,16 @@ class UrlsController < ApplicationController
   end
 
   def visit
-    # params[:url]
-    # @url = find url
+    result = VisitUrl.call(
+      short_url: params[:url],
+      browser: browser.name,
+      platform: browser.platform&.name || 'unknown'
+    )
+    if result.failure?
+      flash[:notice] = result.error
+      redirect_to urls_path and return
+    end
+    redirect_to result.url.original_url
   end
 
   def url_params

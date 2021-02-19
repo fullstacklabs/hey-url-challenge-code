@@ -39,7 +39,9 @@
   <tbody>
     <% @urls.each do |url| %>
       <tr>
-        <th scope="row"><a href="<%= visit_url(url.short_url) %>"><%= visit_url(url.short_url) %></a></th>
+        <th scope="row">
+          <a target="_blank" href="<%= visit_url(url.short_url) %>"><%= visit_url(url.short_url) %></a>
+        </th>
         <td><a href="<%= url.original_url %>"><%= url.original_url %></a></td>
         <td><%= url.created_at.strftime('%b %d, %Y') %></td>
         <td><%= url.clicks_count %></td>

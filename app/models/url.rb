@@ -13,6 +13,7 @@
 #
 class Url < ApplicationRecord
   # scope :latest, -> {}
+  has_many :clicks
 
   validates :original_url, presence: true
   validates :original_url, url: true
