@@ -14,7 +14,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row" id="chart">
   <div class="col s12">
     <div class="card-panel">
       <div id="total-clicks-chart"></div>
@@ -37,63 +37,9 @@
 </div>
 
 <script>
-  google.charts.load('current', {packages: ['corechart']});
-  google.charts.setOnLoadCallback(drawCharts);
-
-  function drawTotalClicksChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['day', 'clicks'],
-    ].concat(<%= raw @daily_clicks %>));
-
-    var options = {
-      title: 'total clicks',
-      haxis: {
-        title: 'day of month'
-      },
-      vaxis: {
-        title: 'clicks'
-      }
-    };
-
-    var chart = new google.visualization.AreaChart(
-      document.getElementById('total-clicks-chart')
-    );
-    chart.draw(data, options);
-  }
-
-  function drawBrowsersChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['browser', 'clicks'],
-    ].concat(<%= raw @browsers_clicks %>));
-
-    var options = {
-      title: 'Browsers'
-    };
-
-    var chart = new google.visualization.PieChart(
-      document.getElementById('browsers-chart')
-    );
-    chart.draw(data, options);
-  }
-
-  function drawPlatformsChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['platform', 'clicks'],
-    ].concat(<%= raw @platform_clicks %>));
-
-    var options = {
-      title: 'Platform'
-    };
-
-    var chart = new google.visualization.PieChart(
-      document.getElementById('platforms-chart')
-    );
-    chart.draw(data, options);
-  }
-
-  function drawCharts() {
-    drawTotalClicksChart();
-    drawBrowsersChart();
-    drawPlatformsChart();
+  var chartData = {
+    totalClicksChart: <%= raw @daily_clicks %>,
+    platformsChart: <%= raw @platform_clicks %>,
+    browserChart: <%= raw @browsers_clicks %>,
   }
  </script>
