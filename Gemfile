@@ -62,6 +62,7 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
+  gem 'shoulda-matchers', '~> 4.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -70,7 +71,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem "interactor", "~> 3.1"
 
 gem "interactor-rails", "~> 2.2"
-
-gem "validate_url", "~> 1.0"
 
 gem "rails-controller-testing", "~> 1.0"
