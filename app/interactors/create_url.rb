@@ -7,8 +7,7 @@ class CreateUrl
       short_url: shorten_url
     )
     context.url.save!
-  rescue => err
-    puts err
+  rescue
     context.fail!(error: 'Failed to create the URL.')
   end
 

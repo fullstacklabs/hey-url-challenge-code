@@ -15,7 +15,6 @@ RSpec.describe Api::UrlsController, type: :controller do
 
     it 'returns valid JSON' do
       body = JSON.parse(response.body)
-      puts body
       expect(body).to eq({
         "data"=>[
           {

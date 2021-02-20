@@ -7,8 +7,7 @@ class VisitUrl
     context.url.clicks_count = context.url.clicks_count + 1
     context.url.clicks << Click.new(browser: context.browser, platform: context.platform)
     context.url.save!
-  rescue => err
-    puts err
+  rescue 
     context.fail!(error: 'Failed to visit the url.')
   end
 end

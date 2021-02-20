@@ -22,7 +22,9 @@ class Url < ApplicationRecord
 
   validates :original_url,
             :short_url,
-            presence: true,
+            presence: true
+  validates :original_url,
+            :short_url,
             uniqueness: true
   validates_format_of :original_url, with: URI.regexp
   validates_format_of :short_url, with: /\A[A-Z]{5,}\z/
