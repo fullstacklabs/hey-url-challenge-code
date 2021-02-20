@@ -74,3 +74,5 @@ gem "interactor", "~> 3.1"
 gem "interactor-rails", "~> 2.2"
 
 gem "rails-controller-testing", "~> 1.0"
+
+gem 'active_model_serializers', '~> 0.10.0'
