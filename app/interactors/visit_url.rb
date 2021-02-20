@@ -9,6 +9,6 @@ class VisitUrl
     context.url.save!
   rescue => err
     puts err
-    context.fail!(error: 'Failed!')
+    context.fail!(error: 'Failed to visit the url.')
   end
 end
