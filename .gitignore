@@ -24,3 +24,4 @@
 /config/master.key
 
 *.sqlite3
+coverage
