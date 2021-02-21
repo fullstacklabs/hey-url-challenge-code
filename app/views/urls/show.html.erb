@@ -17,7 +17,7 @@
 <div class="row">
   <div class="col s12">
     <div class="card-panel">
-      <div id="total-clicks-chart"></div>
+      <div id="total-clicks-chart"><%= 'no data yet' if @daily_clicks.none? %></div>
     </div>
   </div>
 </div>
@@ -25,13 +25,13 @@
 <div class="row">
   <div class="col s6">
     <div class="card-panel">
-      <div id="platforms-chart"></div>
+      <div id="platforms-chart"><%= 'no data yet' if @platform_clicks.none? %></div>
     </div>
   </div>
 
   <div class="col s6">
     <div class="card-panel">
-      <div id="browsers-chart"></div>
+      <div id="browsers-chart"><%= 'no data yet' if @browsers_clicks.none? %></div>
     </div>
   </div>
 </div>
@@ -92,8 +92,8 @@
   }
 
   function drawCharts() {
-    drawTotalClicksChart();
-    drawBrowsersChart();
-    drawPlatformsChart();
+    <%= 'drawTotalClicksChart();' if @daily_clicks.any? %>
+    <%= 'drawPlatformsChart();' if @platform_clicks.any? %>
+    <%= 'drawBrowsersChart();' if @browsers_clicks.any? %>
   }
  </script>

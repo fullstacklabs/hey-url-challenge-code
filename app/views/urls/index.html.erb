@@ -1,6 +1,3 @@
-<% if flash[:notice] %>
-  <div class="card-panel notice deep-orange"><%= flash[:notice] %></div>
-<% end %>
 <div class="row">
   <div class="col m12">
     <%= form_for @url do |f| %>
@@ -38,7 +35,7 @@
     <% @urls.each do |url| %>
       <tr>
         <th scope="row"><a href="<%= visit_url(url.short_url) %>"><%= visit_url(url.short_url) %></a></th>
-        <td><a href="https://drive.google.com/file/d/1VdLgSSMojWFb1GRoBAFX_eXy7oX2J">drive.google.com/file/d/1VdLgSSMojWFb1GRoBAFX_eXy7oX2J...</a></td>
+        <td><%= link_to url.original_url, url.original_url, target: '_blank' %></td>
         <td><%= url.created_at.strftime('%b %d, %Y') %></td>
         <td><%= url.clicks_count %></td>
         <td>
