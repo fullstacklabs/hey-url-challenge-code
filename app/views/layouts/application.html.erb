@@ -18,7 +18,10 @@
       </div>
     </nav>
     <main role="main" class="container">
-      <%= yield %>
+		<% flash.each do |k, v| %>
+			<div class="card-panel notice deep-orange"><%= "#{k}: #{v}" %></div>
+		<% end %>
+    	<%= yield %>
     </main>
   </body>
 </html>
