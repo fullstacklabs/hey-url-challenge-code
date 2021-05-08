@@ -12,8 +12,12 @@ class UrlsController < ApplicationController
   end
 
   def create
-    raise 'add some code'
-    # create a new URL record
+    @url = Url.new(permit_params)
+    @url.generate
+    redirect_to urls_path
+  rescue StandardError
+    @urls = Url.page(params[:page])
+    render :index
   end
 
   def show
@@ -48,5 +52,11 @@ class UrlsController < ApplicationController
   def visit
     # params[:short_url]
     render plain: 'redirecting to url...'
+  end
+
+  private
+
+  def permit_params
+    params.require(:url).permit(:original_url)
   end
 end

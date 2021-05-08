@@ -3,7 +3,7 @@
 <% end %>
 <div class="row">
   <div class="col m12">
-    <%= form_for @url do |f| %>
+    <%= simple_form_for @url do |f| %>
       <div class="card">
         <div class="card-content">
           <div class="row">
@@ -13,11 +13,9 @@
           </div>
           <div class="row">
             <div class="col m6 offset-m2">
-              <%= f.text_field :original_url, class: 'validate form-control', placeholder: 'Your original URL here' %>
+              <%= f.input :original_url, class: 'validate form-control', placeholder: 'Your original URL here', label: false  %>
             </div>
-            <div class="col m2">
-              <button type="submit" class="waves-effect waves-light btn">Shorten URL</button>
-            </div>
+            <%= f.button :submit %>
           </div>
         </div>
       </div>
