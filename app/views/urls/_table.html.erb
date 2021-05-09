@@ -1,0 +1,19 @@
+<%= content_tag(:table, class: "table highlight") do %>
+  <%= content_tag(:tbody) do %>
+    <%= content_tag(:tr) do %>
+      <%= content_tag(:th, 'Short URL', class: 'col')%>
+      <%= content_tag(:th, 'Original URL', class: 'col')%>
+      <%= content_tag(:th, 'Created', class: 'col')%>
+      <%= content_tag(:th, 'Clicks Count', class: 'col')%>
+      <%= content_tag(:th, 'Stats', class: 'col')%>
+    <% end %>
+  <% end %>
+  <% urls.each do |url| %>
+    <%= content_tag(:tbody) do %>
+      <%= content_tag(:tr) do %>
+        <%= index_url_table(url) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+<%= paginate urls %>

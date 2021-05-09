@@ -92,4 +92,58 @@ RSpec.describe Url, type: :model do
   		expect(url.short_url).to eq(url.short_url.upcase)
   	end
   end
+
+  describe 'clicks_per_browser' do
+  	let(:url) { create(:url) }
+
+  	it 'return number of clicks_per_browser' do
+  		%i(chrome chrome mozilla).each do |browser|
+  			create(:click, url: url, browser: browser)
+  		end
+  		expect(url.clicks_per_browser).to eq([['chrome', 2], ['mozilla', 1]])
+  	end
+
+  	it 'returns blank array when there is no click to this url' do
+  		expect(url.clicks_per_browser).to eq([])
+  	end
+  end
+
+  describe 'clicks_per_platform' do
+  	let(:url) { create(:url) }
+
+  	it 'return number of clicks_per_platform' do
+  		%i(macos macos ubuntu ubuntu window ubuntu).each do |platform|
+  			create(:click, url: url, platform: platform)
+  		end
+  		expect(url.clicks_per_platform).to eq([['macos', 2], ['ubuntu', 3], ['window', 1]])
+  	end
+
+  	it 'returns blank array when there is no click to this url' do
+  		expect(url.clicks_per_platform).to eq([])
+  	end
+  end
+
+	describe 'clicks_per_day' do
+  	let(:url) { create(:url) }
+
+  	it 'return number of clicks_per_platform' do
+  		travel_to Time.local(2021, 4, 5)
+
+  		[1.day.ago, 2.days.ago, 2.days.ago, 6.days.ago].each do |created_at|
+  			create(:click, url: url, created_at: created_at)
+  		end
+  		expect(url.clicks_per_day).to eq([["03", 2], ["04", 1]])
+  	end
+
+  	it 'returns blank array when there is no click to this url' do
+  		expect(url.clicks_per_day).to eq([])
+  	end
+
+  	it 'returns blank array when there is no click to this url on this month' do
+  		travel_to Time.local(2021, 4, 3)
+
+			create(:click, url: url, created_at: 4.days.ago)
+  		expect(url.clicks_per_day).to eq([])
+  	end
+  end  
 end

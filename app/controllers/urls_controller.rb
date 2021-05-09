@@ -2,61 +2,46 @@
 
 class UrlsController < ApplicationController
   def index
-    # recent 10 short urls
-    @url = Url.new
-    @urls = [
-      Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDG', original_url: 'http://facebook.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDF', original_url: 'http://yahoo.com', created_at: Time.now)
-    ]
+    index_variables
   end
 
   def create
     @url = Url.new(permit_params)
     @url.generate
+    flash[:success] = I18n.t(:record_created)
     redirect_to urls_path
-  rescue StandardError
-    @urls = Url.page(params[:page])
-    render :index
+    rescue StandardError
+      @urls = Url.page(params[:page])
+      render :index, status: :unprocessable_entity
   end
 
   def show
-    @url = Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now)
-    # implement queries
-    @daily_clicks = [
-      ['1', 13],
-      ['2', 2],
-      ['3', 1],
-      ['4', 7],
-      ['5', 20],
-      ['6', 18],
-      ['7', 10],
-      ['8', 20],
-      ['9', 15],
-      ['10', 5]
-    ]
-    @browsers_clicks = [
-      ['IE', 13],
-      ['Firefox', 22],
-      ['Chrome', 17],
-      ['Safari', 7]
-    ]
-    @platform_clicks = [
-      ['Windows', 13],
-      ['macOS', 22],
-      ['Ubuntu', 17],
-      ['Other', 7]
-    ]
+    @url = Url.find_by_short_url(params[:url]).first
+
+    @browsers_clicks = @url.clicks_per_browser
+    @platform_clicks = @url.clicks_per_platform
+    @daily_clicks = @url.clicks_per_day
+  rescue NoMethodError
+    index_variables
+    render :index, status: 404
   end
 
   def visit
-    # params[:short_url]
-    render plain: 'redirecting to url...'
+    browser = Browser.new(request.headers['User-Agent'], accept_language: request.headers["Accept-Language"])
+    redirect_to Click.create_click(params[:short_url], browser).original_url
+  rescue NoMethodError
+    index_variables
+    render :index, status: 404
   end
 
   private
 
   def permit_params
     params.require(:url).permit(:original_url)
+  end
+
+  def index_variables
+    @url = Url.new
+    @urls = Url.order(:created_at).page(params[:page]).per(10)
   end
 end

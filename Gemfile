@@ -15,7 +15,7 @@ gem 'rubocop-rspec'
 gem 'kaminari'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.1'
+gem 'rails', '~> 6.0.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1'
 # Use Puma as the app server
@@ -67,6 +67,7 @@ group :test do
   gem 'capybara', '>= 3'
   # https://github.com/titusfortner/webdrivers
   gem 'webdrivers', '~> 4.0', require: false
+  gem 'rails-controller-testing'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
