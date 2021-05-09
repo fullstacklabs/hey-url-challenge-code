@@ -11,7 +11,7 @@ class UrlsController < ApplicationController
     flash[:success] = I18n.t(:record_created)
     redirect_to urls_path
     rescue StandardError
-      @urls = Url.page(params[:page])
+      @urls = Url.page(params[:page]).per(10)
       render :index, status: :unprocessable_entity
   end
 
