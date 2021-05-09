@@ -5,14 +5,31 @@ require 'rails_helper'
 RSpec.describe UrlsController, :type => :request do
 
 	context 'index' do
-		it 'must return 200 ok' do
-			get urls_path
-			expect(response).to have_http_status(:ok)
+		describe 'as html' do
+			it 'must return 200 ok' do
+				get urls_path
+				expect(response).to have_http_status(:ok)
+			end
+
+			it 'must render table partial' do
+				get urls_path
+				expect(response).to render_template(:_table)
+			end
 		end
 
-		it 'must render table partial' do
-			get urls_path
-			expect(response).to render_template(:_table)
+		describe 'as json' do
+			it 'must return 200 ok' do
+				headers = { "ACCEPT" => "application/json" }
+				get urls_path, :headers => headers
+				expect(response).to have_http_status(:ok)
+			end
+
+			it 'body cannot be blank' do
+				create(:url)
+				headers = { "ACCEPT" => "application/json" }
+				get urls_path, :headers => headers
+				expect(response.body).not_to eq('')
+			end
 		end
 	end
 

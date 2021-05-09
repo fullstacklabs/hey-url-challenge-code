@@ -3,6 +3,16 @@
 class UrlsController < ApplicationController
   def index
     index_variables
+    respond_to do |format|
+      format.html do
+        index_variables
+      end
+
+      format.json do
+        urls
+        render jsonapi: @urls, status: 200
+      end
+    end
   end
 
   def create
@@ -42,6 +52,10 @@ class UrlsController < ApplicationController
 
   def index_variables
     @url = Url.new
+    urls
+  end
+
+  def urls
     @urls = Url.order(:created_at).page(params[:page]).per(10)
   end
 end

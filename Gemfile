@@ -75,3 +75,5 @@ end
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'graphiql-rails', group: :development
+gem 'jsonapi.rb'
+gem 'responders'
