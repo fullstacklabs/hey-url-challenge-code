@@ -17,7 +17,7 @@
 <div class="row">
   <div class="col s12">
     <div class="card-panel">
-      <div id="total-clicks-chart"></div>
+      <%= data_chart('total-clicks-chart', 'data-total-clicks', @daily_clicks) %>
     </div>
   </div>
 </div>
@@ -25,75 +25,15 @@
 <div class="row">
   <div class="col s6">
     <div class="card-panel">
-      <div id="platforms-chart"></div>
+      <%= data_chart('platforms-chart', 'data-platforms', @platform_clicks) %>
     </div>
   </div>
 
   <div class="col s6">
     <div class="card-panel">
-      <div id="browsers-chart"></div>
+      <%= data_chart('browsers-chart', 'data-browsers', @browsers_clicks) %>
     </div>
   </div>
 </div>
 
-<script>
-  google.charts.load('current', {packages: ['corechart']});
-  google.charts.setOnLoadCallback(drawCharts);
-
-  function drawTotalClicksChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['day', 'clicks'],
-    ].concat(<%= raw @daily_clicks %>));
-
-    var options = {
-      title: 'total clicks',
-      haxis: {
-        title: 'day of month'
-      },
-      vaxis: {
-        title: 'clicks'
-      }
-    };
-
-    var chart = new google.visualization.AreaChart(
-      document.getElementById('total-clicks-chart')
-    );
-    chart.draw(data, options);
-  }
-
-  function drawBrowsersChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['browser', 'clicks'],
-    ].concat(<%= raw @browsers_clicks %>));
-
-    var options = {
-      title: 'Browsers'
-    };
-
-    var chart = new google.visualization.PieChart(
-      document.getElementById('browsers-chart')
-    );
-    chart.draw(data, options);
-  }
-
-  function drawPlatformsChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['platform', 'clicks'],
-    ].concat(<%= raw @platform_clicks %>));
-
-    var options = {
-      title: 'Platform'
-    };
-
-    var chart = new google.visualization.PieChart(
-      document.getElementById('platforms-chart')
-    );
-    chart.draw(data, options);
-  }
-
-  function drawCharts() {
-    drawTotalClicksChart();
-    drawBrowsersChart();
-    drawPlatformsChart();
-  }
- </script>
+<%= javascript_include_tag 'urls/metrics' %>

@@ -3,6 +3,7 @@
 en:
   hello: "Hello world"
   record_created: 'Record Created'
+  no_data_available: 'No data available'
   time:
     formats:
       short: "%B %d, %Y"
