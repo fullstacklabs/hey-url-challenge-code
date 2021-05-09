@@ -46,3 +46,9 @@ $ bin/rails server
 
 ## Challenge
 See [CHALLENGE.md](./CHALLENGE.md)
+
+9. Test credentials
+ ```
+ 	3dbc4d301b61e386df45a2be46006ccd
+```
+
