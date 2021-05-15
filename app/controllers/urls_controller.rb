@@ -56,6 +56,6 @@ class UrlsController < ApplicationController
   end
 
   def urls
-    @urls = Url.order(:created_at).page(params[:page]).per(10)
+    @urls = Url.order(created_at: :desc).page(params[:page]).per(10)
   end
 end
