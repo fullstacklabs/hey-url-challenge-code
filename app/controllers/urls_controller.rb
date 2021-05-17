@@ -4,49 +4,59 @@ class UrlsController < ApplicationController
   def index
     # recent 10 short urls
     @url = Url.new
-    @urls = [
-      Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDG', original_url: 'http://facebook.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDF', original_url: 'http://yahoo.com', created_at: Time.now)
-    ]
+    @urls = Url.all.reverse_order.limit(10).to_a
   end
 
   def create
-    raise 'add some code'
-    # create a new URL record
+    new_url = Url.new short_url: 'AAAAA', original_url: params[:url][:original_url]
+    new_url.save # XXX- not parallel! Gotta find another algorithm over record ID to solve it.
+
+    if new_url.id.nil?
+      flash[:notice] = "Bad URL: #{params[:url][:original_url]}"
+    else
+      new_url.short_url = ApplicationHelper.short_encode(new_url.id)
+      new_url.save
+      flash[:success] = "Yay, URL created as: http://localhost:3000/#{new_url.short_url}"
+    end
+
+    redirect_to action: 'index'
   end
 
   def show
-    @url = Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now)
-    # implement queries
-    @daily_clicks = [
-      ['1', 13],
-      ['2', 2],
-      ['3', 1],
-      ['4', 7],
-      ['5', 20],
-      ['6', 18],
-      ['7', 10],
-      ['8', 20],
-      ['9', 15],
-      ['10', 5]
-    ]
-    @browsers_clicks = [
-      ['IE', 13],
-      ['Firefox', 22],
-      ['Chrome', 17],
-      ['Safari', 7]
-    ]
-    @platform_clicks = [
-      ['Windows', 13],
-      ['macOS', 22],
-      ['Ubuntu', 17],
-      ['Other', 7]
-    ]
+    short_url = params[:url]
+    @url = Url.find_by id: ApplicationHelper.short_decode(short_url)
+
+    if @url.nil?
+      render plain: 'I dont exist...', status: 404
+    else
+      clicks = Click.where("url_id = #{@url.id} and created_at > current_date - interval '10 days'").find_each.group_by(&lambda { |x| x.created_at.to_date.to_s })
+      @daily_clicks = (9.days.ago.to_date..Date.today).map.with_index(1) { |day, idx| [idx.to_s, clicks[day.to_s].nil? ? 0 : clicks[day.to_s].length] }
+
+      clicks = Click.where("url_id = #{@url.id} and created_at > current_date - interval '10 days'").find_each.group_by(&lambda { |x| x.browser })
+      @browsers_clicks = clicks.keys.map { |k| [k, clicks[k].length] }
+
+      clicks = Click.where("url_id = #{@url.id} and created_at > current_date - interval '10 days'").find_each.group_by(&lambda { |x| x.platform })
+      @platform_clicks = clicks.keys.map { |k| [k, clicks[k].length] }
+    end
   end
 
   def visit
-    # params[:short_url]
-    render plain: 'redirecting to url...'
+    short_url = params[:short_url]
+    url_id = ApplicationHelper.short_decode(short_url)
+    url = Url.find_by id: url_id
+
+    if url.nil?
+      render plain: 'I dont exist...', status: 404
+    else
+      url.clicks_count += 1
+      url.save
+
+      agent = ApplicationHelper.resolve_agent(request.env['HTTP_USER_AGENT'])
+
+      click = Click.new url_id: url.id, browser: agent[:browser], platform: agent[:platform]
+      click.save
+      # render plain: "redirecting to url... #{url.original_url}"
+      redirect_to url.original_url
+    end
   end
 end
